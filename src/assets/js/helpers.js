@@ -11,6 +11,7 @@ export function storeWithDate(key, value, days) {
   };
   localStorage.setItem(key, JSON.stringify(item));
 }
+
 export function getWithDate(key) {
   const itemStr = localStorage.getItem(key);
   if (!itemStr) {

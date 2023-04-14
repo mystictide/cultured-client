@@ -1,6 +1,7 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CharacterBrowser from "./components/main/characterBrowser";
 import Home from "./pages/main/home";
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
           {/* <Header /> */}
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/c/:name" element={<CharacterBrowser />} />
           </Routes>
         </div>
       </Router>

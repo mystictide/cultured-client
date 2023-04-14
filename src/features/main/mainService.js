@@ -3,7 +3,6 @@ import { storeWithDate } from "../../assets/js/helpers";
 
 const API_URL = "http://localhost:7474/main/";
 // const API_URL = "https://capi.herrguller.cc/main/";
-const secret = import.meta.env.VITE_SECRET;
 
 const getCategories = async (reqData) => {
   var config = {
@@ -28,12 +27,11 @@ const getCategories = async (reqData) => {
   return data;
 };
 
-const charactersByCategory = async (reqData) => {
+const characterByCategory = async (reqData) => {
   var config = {
     method: "get",
-    url: API_URL + "get/characters?category=" + reqData.category,
+    url: API_URL + "get/character?category=" + reqData.category,
     headers: {
-      Authorization: "Bearer " + secret,
       "Content-Type": "application/json",
     },
   };
@@ -49,9 +47,31 @@ const charactersByCategory = async (reqData) => {
   return data;
 };
 
+const filterCharacters = async (reqData) => {
+  var config = {
+    method: "post",
+    url: API_URL + "filter/characters",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: JSON.stringify(reqData.filter),
+  };
+  var data = await axios(config)
+    .then(function (response) {
+      storeWithDate("characters", JSON.stringify(response.data), 1);
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+
+  return data;
+};
+
 const mainService = {
   getCategories,
-  charactersByCategory,
+  characterByCategory,
+  filterCharacters,
 };
 
 export default mainService;

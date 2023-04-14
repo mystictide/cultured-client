@@ -136,19 +136,30 @@ a {
 
 button{
     cursor: pointer;
+    outline: inherit;
+    border: none;
     &:hover{
         opacity: 1;
+    }
+
+    svg{
+        font-size: 1.5rem;
     }
 }
 
 .function {
-    display: block;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
     border-radius: 3px;
-    background: $bg-dark;
+    background: none;
     padding: 10px 15px;
     font-size: 0.9rem;
     color: $font-main;
     opacity: .8;
+    &:hover{
+        text-decoration: underline;
+    }
 }
 
 .page-centered {
@@ -212,8 +223,8 @@ button{
         justify-content: center;
 
         .overlay {
-            width: 100vw;
-            min-height: 100vh;
+            width: 100%;
+            min-height: 100%;
             cursor: auto;
             background: url("http://localhost:7474/main/get/background") no-repeat 0 0;
             background-size: cover;
@@ -368,6 +379,10 @@ button{
             }
         }
     }
+
+    .page-container .main .content .categories {
+        padding: 2rem 0;
+    }
 }
 
 @media (max-width: 1040px) {
@@ -394,6 +409,7 @@ button{
     }
 
     .page-container .main .content .categories {
+        justify-content: center;
         padding: 2rem 0;
     }
 }

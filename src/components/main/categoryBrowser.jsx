@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
+import { IoReturnDownBack } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
-import { getCategories } from "../../features/main/mainSlice";
+import { formatPrettyURL } from "../../assets/js/helpers";
+import { filterCharacters, getCategories } from "../../features/main/mainSlice";
 
 function CategoryBrowser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { categories, isLoading } = useSelector((state) => state.main);
   const [subState, setSubState] = useState(
-    categories[0].ParentID ? true : false
+    categories ? (categories[0].ParentID ? true : false) : false
   );
 
   useEffect(() => {
@@ -23,8 +25,13 @@ function CategoryBrowser() {
   }, [categories, isLoading]);
 
   const handleClick = (item) => {
-    if (item.ParentID) {
-      // dispatch(saveItem(item)).then(() => navigate("/"));
+    if (item.ItemCount > 0) {
+      const reqData = {
+        filter: { Keyword: "", page: 1, CategoryID: item.ID },
+      };
+      dispatch(filterCharacters(reqData)).then(() =>
+        navigate(`/c/${formatPrettyURL(item.Name)}`)
+      );
     } else {
       const reqData = {
         parentid: item.ID,
@@ -52,22 +59,24 @@ function CategoryBrowser() {
       ) : (
         <>
           <ul className="h-list c-gap-10 r-gap-10 categories">
-            {categories.map((item, index) => (
-              <li
-                key={index}
-                className="box"
-                style={{
-                  backgroundImage: `url("${item.ImageURL}")`,
-                }}
-                onClick={(e) => {
-                  handleClick(item);
-                }}
-              >
-                <div className="info v-center h-center">
-                  <h4>{item.Name}</h4>
-                </div>
-              </li>
-            ))}
+            {categories
+              ? categories.map((item, index) => (
+                  <li
+                    key={index}
+                    className="box"
+                    style={{
+                      backgroundImage: `url("${item.ImageURL}")`,
+                    }}
+                    onClick={(e) => {
+                      handleClick(item);
+                    }}
+                  >
+                    <div className="info v-center h-center">
+                      <h4>{item.Name}</h4>
+                    </div>
+                  </li>
+                ))
+              : ""}
           </ul>
           {subState ? (
             <button
@@ -76,7 +85,7 @@ function CategoryBrowser() {
                 backToMain();
               }}
             >
-              Back to main
+              <IoReturnDownBack /> Back to main
             </button>
           ) : (
             ""

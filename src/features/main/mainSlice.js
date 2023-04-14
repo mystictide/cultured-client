@@ -3,9 +3,11 @@ import { getWithDate } from "../../assets/js/helpers";
 import mainService from "./mainService";
 
 const categories = JSON.parse(getWithDate("categories"));
+const characters = JSON.parse(getWithDate("characters"));
 
 const initialState = {
   categories: categories ? categories : null,
+  characters: characters ? characters : null,
   character: null,
   isError: false,
   isSuccess: false,
@@ -33,11 +35,32 @@ export const getCategories = createAsyncThunk(
   }
 );
 
-export const charactersByCategory = createAsyncThunk(
-  "main/charactersByCategory",
+export const characterByCategory = createAsyncThunk(
+  "main/characterByCategory",
   async (reqData, thunkAPI) => {
     try {
-      const response = await mainService.charactersByCategory(reqData);
+      const response = await mainService.characterByCategory(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const filterCharacters = createAsyncThunk(
+  "main/filterCharacters",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await mainService.filterCharacters(reqData);
       if (response.status === 500) {
         return thunkAPI.rejectWithValue(response);
       }
@@ -83,21 +106,37 @@ export const mainSlice = createSlice({
         state.message = null;
         state.categories = null;
       })
-      .addCase(charactersByCategory.pending, (state) => {
+      .addCase(characterByCategory.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(charactersByCategory.fulfilled, (state, action) => {
+      .addCase(characterByCategory.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
         state.character = action.payload;
       })
-      .addCase(charactersByCategory.rejected, (state, action) => {
+      .addCase(characterByCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = null;
         state.character = null;
+      })
+      .addCase(filterCharacters.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(filterCharacters.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.characters = action.payload;
+      })
+      .addCase(filterCharacters.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = null;
+        state.characters = null;
       });
   },
 });
