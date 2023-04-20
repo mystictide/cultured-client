@@ -2,6 +2,7 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CharacterBrowser from "./components/main/characterBrowser";
+import ViewCharacter from "./components/main/viewCharacter";
 import Home from "./pages/main/home";
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
           {/* <Header /> */}
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/c/:name" element={<CharacterBrowser />} />
+            <Route path="/category/:name" element={<CharacterBrowser />} />
+            <Route path="/c/:name" element={<ViewCharacter />} />
           </Routes>
         </div>
       </Router>

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { storeWithDate } from "../../assets/js/helpers";
 
 const API_URL = "http://localhost:7474/main/";
 // const API_URL = "https://capi.herrguller.cc/main/";
@@ -11,13 +10,35 @@ const getCategories = async (reqData) => {
       API_URL +
       "get/categories?main=" +
       reqData.main +
+      "&prev=" +
+      reqData.prev +
       "&parentid=" +
       reqData.parentid,
   };
 
   var data = await axios(config)
     .then(function (response) {
-      storeWithDate("categories", JSON.stringify(response.data), 2);
+      return response.data;
+    })
+    .catch(function (error) {
+      return { data: error.response.data, status: error.response.status };
+    });
+
+  return data;
+};
+
+const getCharacter = async (reqData) => {
+  let urlString = API_URL + "get/character?Name=" + reqData.Name;
+  if (reqData.ID) {
+    urlString += "&ID=" + reqData.ID;
+  }
+  var config = {
+    method: "get",
+    url: urlString,
+  };
+
+  var data = await axios(config)
+    .then(function (response) {
       return response.data;
     })
     .catch(function (error) {
@@ -30,7 +51,7 @@ const getCategories = async (reqData) => {
 const characterByCategory = async (reqData) => {
   var config = {
     method: "get",
-    url: API_URL + "get/character?category=" + reqData.category,
+    url: API_URL + "get/character?Name=" + reqData.Name,
     headers: {
       "Content-Type": "application/json",
     },
@@ -58,7 +79,6 @@ const filterCharacters = async (reqData) => {
   };
   var data = await axios(config)
     .then(function (response) {
-      storeWithDate("characters", JSON.stringify(response.data), 1);
       return response.data;
     })
     .catch(function (error) {
@@ -70,6 +90,7 @@ const filterCharacters = async (reqData) => {
 
 const mainService = {
   getCategories,
+  getCharacter,
   characterByCategory,
   filterCharacters,
 };

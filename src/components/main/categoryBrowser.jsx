@@ -19,10 +19,11 @@ function CategoryBrowser() {
       const reqData = {
         parentid: 0,
         main: true,
+        prev: false,
       };
       dispatch(getCategories(reqData));
     }
-  }, [categories, isLoading]);
+  }, [categories, isLoading, subState]);
 
   const handleClick = (item) => {
     if (item.ItemCount > 0) {
@@ -30,24 +31,25 @@ function CategoryBrowser() {
         filter: { Keyword: "", page: 1, CategoryID: item.ID },
       };
       dispatch(filterCharacters(reqData)).then(() =>
-        navigate(`/c/${formatPrettyURL(item.Name)}`)
+        navigate(`/category/${formatPrettyURL(item.Name)}`)
       );
     } else {
       const reqData = {
         parentid: item.ID,
+        prev: false,
         main: true,
       };
       dispatch(getCategories(reqData)).then(() => setSubState(true));
     }
   };
 
-  const backToMain = () => {
+  const backToPrevious = () => {
     const reqData = {
-      parentid: 0,
-      main: true,
+      parentid: categories[0].ParentID ?? 0,
+      prev: true,
+      main: false,
     };
     dispatch(getCategories(reqData));
-    setSubState(false);
   };
 
   return (
@@ -82,10 +84,10 @@ function CategoryBrowser() {
             <button
               className="function"
               onClick={(e) => {
-                backToMain();
+                backToPrevious();
               }}
             >
-              <IoReturnDownBack /> Back to main
+              <IoReturnDownBack /> Back to previous
             </button>
           ) : (
             ""

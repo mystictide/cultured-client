@@ -1,32 +1,64 @@
+import { useEffect } from "react";
 import { IoReturnDownBack } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
-import { getCategories } from "../../features/main/mainSlice";
+import { decodeURL, formatPrettyURL } from "../../assets/js/helpers";
+import {
+  filterCharacters,
+  getCategories,
+  getCharacter,
+} from "../../features/main/mainSlice";
+import Pager from "../helpers/pager";
 
 function CharacterBrowser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const param = useParams();
   const { characters, isLoading } = useSelector((state) => state.main);
 
-  // useEffect(() => {
-  //   if (!categories) {
-  //     const reqData = {
-  //       parentid: 0,
-  //       main: true,
-  //     };
-  //     dispatch(getCategories(reqData));
-  //   }
-  // }, [categories, isLoading]);
+  useEffect(() => {
+    if (param && !characters) {
+      const reqData = {
+        filter: { Keyword: "", page: 1, CategoryName: decodeURL(param.name) },
+      };
+      dispatch(filterCharacters(reqData));
+    }
+  }, [characters, param]);
 
-  const handleClick = (item) => {};
+  const setFilter = (e, page) => {
+    const reqData = {
+      filter: {
+        Keyword: "",
+        page: page,
+        CategoryID: characters.filter.CategoryID,
+        CategoryName: characters.filter.CategoryName,
+      },
+    };
+    dispatch(filterCharacters(reqData));
+  };
+
+  const handleClick = (item) => {
+    const reqData = {
+      ID: item.ID,
+      Name: item.Name,
+    };
+    dispatch(getCharacter(reqData)).then(() =>
+      navigate(`/c/${formatPrettyURL(item.Name)}`)
+    );
+  };
 
   const backToMain = () => {
-    const reqData = {
-      parentid: 0,
-      main: true,
-    };
-    dispatch(getCategories(reqData)).then(() => navigate("/"));
+    if (characters) {
+      const reqData = {
+        parentid: characters.data[0].Category.ParentID,
+        main: false,
+        prev: false,
+      };
+      dispatch(getCategories(reqData)).then(navigate("/"));
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -64,13 +96,23 @@ function CharacterBrowser() {
                     ))
                   : ""}
               </ul>
+              {characters ? (
+                <Pager
+                  data={characters}
+                  setFilter={setFilter}
+                  filterModel={characters.filterModel}
+                />
+              ) : (
+                ""
+              )}
+
               <button
                 className="function"
                 onClick={(e) => {
                   backToMain();
                 }}
               >
-                <IoReturnDownBack /> Back to main
+                <IoReturnDownBack /> Back to categories
               </button>
             </>
           )}

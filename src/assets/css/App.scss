@@ -22,6 +22,8 @@ $bg-main: #393053;
 $bg-dark: #121212;
 $bg-light: #463b66;
 $color-flavour: #635985;
+$color-flavour-sec: #795985;
+$color-flavour-third: #856359;
 $font-main: #ffffff;
 
 @mixin transition {
@@ -62,7 +64,7 @@ $font-main: #ffffff;
 body {
     height: 100%;
     width: 100%;
-    color: $color-flavour;
+    color: $font-main;
     font-family: $font-mont;
     background-color: $bg-dark;
 }
@@ -102,12 +104,20 @@ body {
     column-gap: 10px;
 }
 
+.c-gap-15 {
+    column-gap: 15px;
+}
+
 .r-gap-5 {
     row-gap: 5px;
 }
 
 .r-gap-10 {
     row-gap: 10px;
+}
+
+.r-gap-15 {
+    row-gap: 15px;
 }
 
 .t-margin-1 {
@@ -134,15 +144,15 @@ a {
     @include transition();
 }
 
-button{
+button {
     cursor: pointer;
     outline: inherit;
     border: none;
-    &:hover{
+    &:hover {
         opacity: 1;
     }
 
-    svg{
+    svg {
         font-size: 1.5rem;
     }
 }
@@ -156,8 +166,8 @@ button{
     padding: 10px 15px;
     font-size: 0.9rem;
     color: $font-main;
-    opacity: .8;
-    &:hover{
+    opacity: 0.8;
+    &:hover {
         text-decoration: underline;
     }
 }
@@ -287,6 +297,80 @@ button{
                 }
             }
 
+            .character {
+                display: flex;
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+
+                .info {
+                    text-align: center;
+                    img {
+                        margin-top: 10px;
+                        border: 5px solid $font-main;
+                        border-radius: 3px;
+                        width: 375px;
+                        height: 600px;
+                    }
+                    span {
+                        font-size: 0.8rem;
+                    }
+                    h1 {
+                        margin-bottom: 0.35em;
+                        color: #ffffff;
+                        font-size: 3rem;
+                        text-align: center;
+                    }
+                    .category {
+                        font-weight: 600;
+                    }
+                }
+
+                .body {
+                    align-self: flex-end;
+                    width: 100%;
+                    padding: 25px 15px;
+                    border-radius: 10px;
+                    background-color: rgba(0, 0, 0, 0.5);
+
+                    .text {
+                        white-space: break-spaces;
+                        font-size: 0.95rem;
+                    }
+
+                    a {
+                        display: inline;
+                        font-weight: 500;
+                    }
+
+                    a.character {
+                        color: lighten($color: $color-flavour-third, $amount: 5);
+                        text-decoration: underline;
+
+                        &:hover {
+                            color: lighten($color: $color-flavour-sec, $amount: 50);
+                        }
+                    }
+                    a.category {
+                        color: lighten($color: $color-flavour, $amount: 15);
+                        text-decoration: underline;
+
+                        &:hover {
+                            color: lighten($color: $color-flavour, $amount: 50);
+                        }
+                    }
+                }
+
+                .category {
+                    color: lighten($color: $color-flavour, $amount: 15);
+                    text-decoration: underline;
+
+                    &:hover {
+                        color: lighten($color: $color-flavour, $amount: 50);
+                    }
+                }
+            }
+
             .multi {
                 display: flex;
                 flex-direction: column;
@@ -363,7 +447,10 @@ button{
         list-style: none;
         .pager-item {
             .pager-button {
+                @extend .function;
+                border-radius: 3px;
                 padding: 8px 10px;
+                font-size: 1rem;
             }
         }
     }
@@ -412,6 +499,10 @@ button{
         justify-content: center;
         padding: 2rem 0;
     }
+    .page-container .main .content .character {
+        width: 100%;
+        flex-direction: column !important;
+    }
 }
 
 @media (max-width: 740px) {
@@ -438,5 +529,9 @@ button{
         .info {
             font-size: 1.8rem;
         }
+    }
+    .page-container .main .content .character {
+        width: 100%;
+        flex-direction: column !important;
     }
 }

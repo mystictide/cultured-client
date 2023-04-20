@@ -1,13 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getWithDate } from "../../assets/js/helpers";
 import mainService from "./mainService";
 
-const categories = JSON.parse(getWithDate("categories"));
-const characters = JSON.parse(getWithDate("characters"));
-
 const initialState = {
-  categories: categories ? categories : null,
-  characters: characters ? characters : null,
+  categories: null,
+  characters: null,
   character: null,
   isError: false,
   isSuccess: false,
@@ -19,6 +15,27 @@ export const getCategories = createAsyncThunk(
   async (reqData, thunkAPI) => {
     try {
       const response = await mainService.getCategories(reqData);
+      if (response.status === 500) {
+        return thunkAPI.rejectWithValue(response);
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+export const getCharacter = createAsyncThunk(
+  "main/getCharacter",
+  async (reqData, thunkAPI) => {
+    try {
+      const response = await mainService.getCharacter(reqData);
       if (response.status === 500) {
         return thunkAPI.rejectWithValue(response);
       }
@@ -85,6 +102,10 @@ export const mainSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.isError = false;
+    },
+    resetCharacters: (state) => {
+      localStorage.removeItem("characters");
+      state.characters = null;
       state.character = null;
     },
   },
@@ -106,6 +127,22 @@ export const mainSlice = createSlice({
         state.message = null;
         state.categories = null;
       })
+      .addCase(getCharacter.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getCharacter.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.isSuccess = true;
+        state.character = action.payload;
+      })
+      .addCase(getCharacter.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = false;
+        state.isError = true;
+        state.message = null;
+        state.character = null;
+      })
       .addCase(characterByCategory.pending, (state) => {
         state.isLoading = true;
       })
@@ -113,14 +150,14 @@ export const mainSlice = createSlice({
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.character = action.payload;
+        state.characters = action.payload;
       })
       .addCase(characterByCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.isSuccess = false;
         state.isError = true;
         state.message = null;
-        state.character = null;
+        state.characters = null;
       })
       .addCase(filterCharacters.pending, (state) => {
         state.isLoading = true;
@@ -141,5 +178,5 @@ export const mainSlice = createSlice({
   },
 });
 
-export const { reset } = mainSlice.actions;
+export const { reset, resetCharacters } = mainSlice.actions;
 export default mainSlice.reducer;
