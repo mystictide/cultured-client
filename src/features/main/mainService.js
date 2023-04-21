@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:7474/main/";
-// const API_URL = "https://capi.herrguller.cc/main/";
+// const API_URL = "http://localhost:7474/main/";
+const API_URL = "https://capi.herrguller.cc/main/";
 
 const getCategories = async (reqData) => {
   var config = {

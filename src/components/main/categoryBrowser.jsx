@@ -23,6 +23,9 @@ function CategoryBrowser() {
       };
       dispatch(getCategories(reqData));
     }
+    if (!categories[0].ParentID) {
+      setSubState(false);
+    }
   }, [categories, isLoading, subState]);
 
   const handleClick = (item) => {
@@ -53,7 +56,7 @@ function CategoryBrowser() {
   };
 
   return (
-    <div className="page-centered ">
+    <div className="page-centered">
       {isLoading ? (
         <div className="loading">
           <PropagateLoader color="#6f5773" size={30} speedMultiplier={0.5} />
