@@ -102,6 +102,7 @@ export const mainSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.isError = false;
+      state.categories = null;
     },
     resetCharacters: (state) => {
       localStorage.removeItem("characters");

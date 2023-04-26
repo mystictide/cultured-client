@@ -4,14 +4,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
 import { formatPrettyURL } from "../../assets/js/helpers";
-import { filterCharacters, getCategories } from "../../features/main/mainSlice";
+import {
+  filterCharacters,
+  getCategories,
+  reset,
+} from "../../features/main/mainSlice";
 
 function CategoryBrowser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { categories, isLoading } = useSelector((state) => state.main);
   const [subState, setSubState] = useState(
-    categories ? (categories[0].ParentID ? true : false) : false
+    categories
+      ? categories.length > 0
+        ? categories[0].ParentID
+          ? true
+          : false
+        : false
+      : false
   );
 
   useEffect(() => {
@@ -23,7 +33,7 @@ function CategoryBrowser() {
       };
       dispatch(getCategories(reqData));
     }
-    if (!categories[0].ParentID) {
+    if (categories && categories.length > 0 && !categories[0].ParentID) {
       setSubState(false);
     }
   }, [categories, isLoading, subState]);
@@ -63,37 +73,53 @@ function CategoryBrowser() {
         </div>
       ) : (
         <>
-          <ul className="h-list c-gap-10 r-gap-10 categories">
-            {categories
-              ? categories.map((item, index) => (
-                  <li
-                    key={index}
-                    className="box"
-                    style={{
-                      backgroundImage: `url("${item.ImageURL}")`,
-                    }}
-                    onClick={(e) => {
-                      handleClick(item);
-                    }}
-                  >
-                    <div className="info v-center h-center">
-                      <h4>{item.Name}</h4>
-                    </div>
-                  </li>
-                ))
-              : ""}
-          </ul>
-          {subState ? (
-            <button
-              className="function"
-              onClick={(e) => {
-                backToPrevious();
-              }}
-            >
-              <IoReturnDownBack /> Back to previous
-            </button>
+          {categories && categories.length > 0 ? (
+            <>
+              <ul className="h-list c-gap-10 r-gap-10 categories">
+                {categories
+                  ? categories.map((item, index) => (
+                      <li
+                        key={index}
+                        className="box"
+                        style={{
+                          backgroundImage: `url("${item.ImageURL}")`,
+                        }}
+                        onClick={(e) => {
+                          handleClick(item);
+                        }}
+                      >
+                        <div className="info v-center h-center">
+                          <h4>{item.Name}</h4>
+                        </div>
+                      </li>
+                    ))
+                  : ""}
+              </ul>
+              {subState ? (
+                <button
+                  className="function"
+                  onClick={(e) => {
+                    backToPrevious();
+                  }}
+                >
+                  <IoReturnDownBack /> Back to previous
+                </button>
+              ) : (
+                ""
+              )}
+            </>
           ) : (
-            ""
+            <div className="page-centered v-center h-center">
+              <h2>No items found</h2>
+              <button
+                className="function"
+                onClick={(e) => {
+                  dispatch(reset());
+                }}
+              >
+                <IoReturnDownBack /> Back to main
+              </button>
+            </div>
           )}
         </>
       )}
