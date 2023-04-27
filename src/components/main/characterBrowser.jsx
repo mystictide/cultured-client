@@ -49,7 +49,7 @@ function CharacterBrowser() {
   };
 
   const backToMain = () => {
-    if (characters) {
+    if (characters && characters.data.length > 0) {
       const reqData = {
         parentid: characters.data[0].Category.ParentID,
         main: false,
@@ -77,7 +77,7 @@ function CharacterBrowser() {
           ) : (
             <>
               <ul className="h-list c-gap-10 r-gap-10 categories">
-                {characters
+                {characters && characters.data.length > 0
                   ? characters.data.map((item, index) => (
                       <li
                         key={index}
@@ -94,9 +94,9 @@ function CharacterBrowser() {
                         </div>
                       </li>
                     ))
-                  : ""}
+                  : "No characters found under category"}
               </ul>
-              {characters ? (
+              {characters && characters.data.length > 0 ? (
                 <Pager
                   data={characters}
                   setFilter={setFilter}
