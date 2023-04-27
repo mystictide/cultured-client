@@ -48,7 +48,7 @@ function ViewCharacter() {
               {character ? (
                 <Character />
               ) : (
-                "Could not gather character information."
+                "Could not find character"
               )}
               <button
                 className="function"
