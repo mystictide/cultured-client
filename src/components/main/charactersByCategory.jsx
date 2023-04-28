@@ -5,13 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
 import { decodeURL, formatPrettyURL } from "../../assets/js/helpers";
 import {
-    filterCharacters,
-    getCategories,
-    getCharacter,
+  filterCharacters,
+  getCategories,
+  getCharacter,
 } from "../../features/main/mainSlice";
 import Pager from "../helpers/pager";
 
-function CharacterBrowser() {
+function CharactersByCategory() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const param = useParams();
@@ -20,7 +20,7 @@ function CharacterBrowser() {
   useEffect(() => {
     if (param && !characters) {
       const reqData = {
-        filter: { Keyword: decodeURL(param.name), page: 1 },
+        filter: { Keyword: "", page: 1, CategoryName: decodeURL(param.name) },
       };
       dispatch(filterCharacters(reqData));
     }
@@ -29,8 +29,10 @@ function CharacterBrowser() {
   const setFilter = (e, page) => {
     const reqData = {
       filter: {
-        Keyword: characters.filter.Keyword,
+        Keyword: "",
         page: page,
+        CategoryID: characters.filter.CategoryID,
+        CategoryName: characters.filter.CategoryName,
       },
     };
     dispatch(filterCharacters(reqData));
@@ -120,4 +122,4 @@ function CharacterBrowser() {
   );
 }
 
-export default CharacterBrowser;
+export default CharactersByCategory;

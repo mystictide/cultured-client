@@ -1,24 +1,19 @@
 import { useEffect } from "react";
 import { IoReturnDownBack } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
-import { decodeURL, formatPrettyURL } from "../../assets/js/helpers";
-import { getCharacter } from "../../features/main/mainSlice";
+import { formatPrettyURL } from "../../assets/js/helpers";
 import Character from "./character";
 
 function ViewCharacter() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const param = useParams();
   const { character, isLoading } = useSelector((state) => state.main);
 
   useEffect(() => {
     if (param && !character) {
-      const reqData = {
-        Name: decodeURL(param.name),
-      };
-      dispatch(getCharacter(reqData));
+      navigate(`/browse/${formatPrettyURL(param.name)}`);
     }
   }, [character, param]);
 
@@ -45,11 +40,7 @@ function ViewCharacter() {
             </div>
           ) : (
             <>
-              {character ? (
-                <Character />
-              ) : (
-                "Could not find character"
-              )}
+              {character ? <Character /> : "Could not find character"}
               <button
                 className="function"
                 onClick={(e) => {
