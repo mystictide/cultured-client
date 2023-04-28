@@ -5,9 +5,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { PropagateLoader } from "react-spinners";
 import { decodeURL, formatPrettyURL } from "../../assets/js/helpers";
 import {
-    filterCharacters,
-    getCategories,
-    getCharacter,
+  filterCharacters,
+  getCategories,
+  getCharacter,
 } from "../../features/main/mainSlice";
 import Pager from "../helpers/pager";
 
@@ -23,6 +23,15 @@ function CharacterBrowser() {
         filter: { Keyword: decodeURL(param.name), page: 1 },
       };
       dispatch(filterCharacters(reqData));
+    }
+    if (characters && characters.data.length === 1) {
+      const reqData = {
+        ID: characters.data[0].ID,
+        Name: characters.data[0].Name,
+      };
+      dispatch(getCharacter(reqData)).then(() =>
+        navigate(`/c/${formatPrettyURL(characters.data[0].Name)}`)
+      );
     }
   }, [characters, param]);
 
