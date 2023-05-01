@@ -101,7 +101,7 @@ function CharacterBrowser() {
                         </div>
                       </li>
                     ))
-                  : "No characters found under category"}
+                  : "No characters found by this name"}
               </ul>
               {characters && characters.data.length > 0 ? (
                 <Pager
