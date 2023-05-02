@@ -20,7 +20,12 @@ function CharactersByCategory() {
   useEffect(() => {
     if (param && !characters) {
       const reqData = {
-        filter: { Keyword: "", page: 1, CategoryName: decodeURL(param.name) },
+        filter: {
+          Keyword: "",
+          page: 1,
+          CategoryName: decodeURL(param.name),
+          SortBy: "asc",
+        },
       };
       dispatch(filterCharacters(reqData));
     }
@@ -33,6 +38,7 @@ function CharactersByCategory() {
         page: page,
         CategoryID: characters.filter.CategoryID,
         CategoryName: characters.filter.CategoryName,
+        SortBy: "asc",
       },
     };
     dispatch(filterCharacters(reqData));

@@ -20,7 +20,7 @@ function CharacterBrowser() {
   useEffect(() => {
     if (param && !characters) {
       const reqData = {
-        filter: { Keyword: decodeURL(param.name), page: 1 },
+        filter: { Keyword: decodeURL(param.name), page: 1, SortBy: "asc" },
       };
       dispatch(filterCharacters(reqData));
     }
@@ -40,6 +40,7 @@ function CharacterBrowser() {
       filter: {
         Keyword: characters.filter.Keyword,
         page: page,
+        SortBy: "asc",
       },
     };
     dispatch(filterCharacters(reqData));
