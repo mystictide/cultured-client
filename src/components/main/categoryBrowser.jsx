@@ -41,7 +41,7 @@ function CategoryBrowser() {
   const handleClick = (item) => {
     if (item.ItemCount > 0) {
       const reqData = {
-        filter: { Keyword: "", page: 1, CategoryID: item.ID },
+        filter: { Keyword: "", page: 1, CategoryID: item.ID, SortBy: "asc" },
       };
       dispatch(filterCharacters(reqData)).then(() =>
         navigate(`/category/${formatPrettyURL(item.Name)}`)
